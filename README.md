@@ -1,2 +1,2 @@
 # Shimeji
-Simple desktop buddy 
+Small desktop buddy to play with
