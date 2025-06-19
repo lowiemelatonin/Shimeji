@@ -1,0 +1,2 @@
+# Shimeji
+Simple desktop buddy 
