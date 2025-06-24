@@ -1,33 +1,58 @@
 package main
 
 import (
-	"log"
-
-	"github.com/hajimehoshi/ebiten/v2"
+	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-type Game struct{}
-
-func (g *Game) Update() error {
-
-	return nil
-}
-
-func (g *Game) Draw(screen *ebiten.Image) {
-
-}
-
-func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return 320, 240
-}
-
 func main() {
-	game := &Game{}
-	ebiten.SetWindowDecorated(false)
-	options := &ebiten.RunGameOptions{
-		ScreenTransparent: true,
+	screenWidth := int32(75)
+	screenHeight := int32(84)
+
+	windowPosition := rl.Vector2{X: 500, Y: 200}
+
+	rl.SetConfigFlags(rl.FlagWindowUndecorated | rl.FlagWindowTransparent | rl.FlagWindowAlwaysRun | rl.FlagWindowTopmost)
+	rl.InitWindow(screenWidth, screenHeight, "shimeji")
+
+	rl.SetWindowPosition(int(windowPosition.X), int(windowPosition.Y))
+	rl.SetTargetFPS(60)
+
+	mousePosition := rl.Vector2{}
+	panOffset := mousePosition
+	dragWindow := false
+	exitWindow := false
+
+	character := rl.LoadImage("defaultCharacter.png")
+	rl.ImageResize(character, screenWidth, screenHeight)
+	texture := rl.LoadTextureFromImage(character)
+	rl.UnloadImage(character)
+
+	for !exitWindow && !rl.WindowShouldClose() {
+		mousePosition = rl.GetMousePosition()
+
+		if rl.IsMouseButtonPressed(rl.MouseLeftButton) && !dragWindow {
+			if rl.CheckCollisionPointRec(mousePosition, rl.NewRectangle(0, 0, float32(screenWidth), float32(screenHeight))) {
+				dragWindow = true
+				panOffset = mousePosition
+			}
+		}
+
+		if dragWindow {
+			windowPosition.X += mousePosition.X - panOffset.X
+			windowPosition.Y += mousePosition.Y - panOffset.Y
+			rl.SetWindowPosition(int(windowPosition.X), int(windowPosition.Y))
+
+			if rl.IsMouseButtonReleased(rl.MouseLeftButton) {
+				dragWindow = false
+			}
+		}
+
+		rl.BeginDrawing()
+		rl.ClearBackground(rl.Blank)
+
+		rl.DrawTexture(texture, 0, 0, rl.White)
+
+		rl.EndDrawing()
 	}
-	if err := ebiten.RunGameWithOptions(game, options); err != nil {
-		log.Fatal(err)
-	}
+
+	rl.CloseWindow()
 }
