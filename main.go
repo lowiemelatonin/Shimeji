@@ -5,8 +5,8 @@ import (
 )
 
 func main() {
-	screenWidth := int32(75)
-	screenHeight := int32(84)
+	screenWidth := int32(63)
+	screenHeight := int32(69)
 
 	windowPosition := rl.Vector2{X: 500, Y: 200}
 
@@ -22,7 +22,6 @@ func main() {
 	exitWindow := false
 
 	character := rl.LoadImage("defaultCharacter.png")
-	rl.ImageResize(character, screenWidth, screenHeight)
 	texture := rl.LoadTextureFromImage(character)
 	rl.UnloadImage(character)
 
@@ -49,7 +48,7 @@ func main() {
 		rl.BeginDrawing()
 		rl.ClearBackground(rl.Blank)
 
-		rl.DrawTexture(texture, 0, 0, rl.White)
+		rl.DrawTextureEx(texture, rl.Vector2{X: 0, Y: 0}, 0, 3, rl.White)
 
 		rl.EndDrawing()
 	}
